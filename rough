@@ -1,2 +1,286 @@
-https://teams.microsoft.com/l/meetup-join/19%3ameeting_YmNhMTkzYjMtN2QwYy00NGM5LTlkMjItYWE0YzU5MDk1YzY2%40thread.v2/0?context=%7b%22Tid%22%3a%2262ccb864-6a1a-4b5d-8e1c-397dec1a8258%22%2c%22Oid%22%3a%2202211915-c878-4fd3-b5c1-478a43637f12%22%7d
-https://teams.microsoft.com/l/meetup-join/19%3ameeting_ZmE0MDM4ZDgtZDY3My00ODdkLWExN2QtZWVhNmZhZTc5NWU2%40thread.v2/0?context=%7b%22Tid%22%3a%2262ccb864-6a1a-4b5d-8e1c-397dec1a8258%22%2c%22Oid%22%3a%2202211915-c878-4fd3-b5c1-478a43637f12%22%7d
+/*
+ * LoadRunner Java script. (Build: _build_number_)
+ * 
+ * Script Description: 
+ *                     
+ */
+
+import lrapi.lr;
+import java.io.IOException; 
+import java.io.FileInputStream;
+import java.util.Random;
+import java.util.Calendar;
+import java.text.SimpleDateFormat;	
+import com.ibm.mq.*;
+import java.util.Date;
+import java.text.ParseException;
+import java.io.*;
+
+
+
+public class Actions
+{
+
+	
+	public String pGDPR_FLAG, vTitle, vRandomStrFirstName, vRandomStrLastName, vDOB, vEmail, vPhoneNum, vAddressLine_1, vAddressLine_2, vAddressLine_3, vCity, vPostCode ;
+	
+	public String File;
+	
+	private MQQueueManager qMgr; // Queue Manager Class
+                                 // 
+    private MQQueue queue_WCS; // Queue Class
+
+    private MQQueue queue_ESP; // Queue Class
+    
+    
+
+	public int init() throws Throwable {
+		
+		lr.start_transaction("01_CONNECT_I0840_WCS"); // Start Connect Transaction
+
+    	String channel = ""; // Define Name of a Channel in string
+
+        String qManager = ""; // Define Name of a qManager in string  
+
+        qManager = lr.eval_string("{pChannelQueueManager}"); // Assigning Value to Queue Manager by Parameterizing QManager. 
+        
+        MQEnvironment mqenv = new com.ibm.mq.MQEnvironment(); // Creating an object to MQEnvironment
+
+        mqenv.hostname = lr.eval_string("{pChannelHostName}"); // Defining HostName and Parameterizing HostName
+
+        mqenv.port = Integer.parseInt(lr.eval_string("{pChennalPortNumber}")); // Definint Port and Parameterizing Port                                                                 
+
+        mqenv.channel = lr.eval_string("{pChannelName}"); // Defining Channel and Parameterizing ChannelName                     
+
+        mqenv.CCSID = 1252;
+
+        mqenv.properties.put(MQC.TRANSPORT_PROPERTY, MQC.TRANSPORT_MQSERIES); // Set Server Connection
+
+        qMgr = new MQQueueManager(qManager); // Creating an object to MQQueueManager with qManager Name    
+
+        int openOptions = MQC.MQOO_OUTPUT | MQC.MQOO_BIND_NOT_FIXED;
+       
+        queue_WCS = qMgr.accessQueue("MS_DS.I0840_REGISTRATION_WCS.ERQ", openOptions, null, null, null);
+        queue_ESP = qMgr.accessQueue("MS_DS.I0841_REGISTRATION_ESP.ERQ", openOptions, null, null, null);
+      
+        lr.end_transaction("01_CONNECT_I0840_WCS", lr.AUTO); // End Connect Transaction
+
+
+		
+		return 0;
+
+	}//end of init
+
+
+	public int action() throws Throwable {
+		    	
+    	
+
+    	
+/*    	
+
+    	String vGDPR_FLAG = "0"; 	// FLAG 0 means, normal flow and 1 means, GDPR flow, 2 means GDPRDR flow
+
+    	if (lr.eval_int("{vIteration}")  % 3  == 1) {
+    		
+    		 vGDPR_FLAG = "0";  	
+    		 
+    	}
+
+
+    	else if (lr.eval_int("{vIteration}") % 3 == 2) {
+    		
+    		 vGDPR_FLAG = "1";  	
+    	}
+
+    	else if (lr.eval_int("{vIteration}") % 3 == 0) {
+    		
+    		 vGDPR_FLAG = "2";  	
+
+    	}
+
+*/
+
+
+
+    	String vGDPR_FLAG = "0"; 	// FLAG 0 means, normal flow and 1 means, GDPR flow, 2 means GDPRDR flow
+
+		
+		if (vGDPR_FLAG.equals("0")) { 		// FLAG 0 means, normal flow and 1 means, GDPR flow
+				
+			vTitle = lr.eval_string("{pTitle}") ;
+			vRandomStrFirstName=randomString(8);
+			vRandomStrLastName=randomString(8);
+			vDOB = lr.eval_string("{pDOB}");	
+			
+			vEmail = vRandomStrFirstName + "_" + lr.eval_string("{pVuserID}") + "_"+lr.eval_string("{vIteration}") +"_"+ lr.eval_string("{vTimeStamp}") + "@gmail.com"; 
+			
+			vPhoneNum = "0832" + lr.eval_string("{pExtCustomerID}") + ""; // Get 9 digit random number
+			
+			//vEmail = "WCS_" + lr.eval_string("{pExtCustomerID}") + "_" + lr.eval_string("{pDate}") + "@gmail.com"; 			
+			//vPhoneNum = "09" + randomPhone() + ""; // Get 9 digit random number 
+			
+			
+			vAddressLine_1 = lr.eval_string("{pAddressLine_1}") + " " + lr.eval_string("{pVuserID}") + " "+lr.eval_string("{vIteration}") + " " + lr.eval_string("{vTimeStamp}") ;
+			vAddressLine_2 = lr.eval_string("{pAddressLine_2}") + " " + lr.eval_string("{pVuserID}") + " "+lr.eval_string("{vIteration}") + " " + lr.eval_string("{vTimeStamp}") ;
+			vAddressLine_3 = lr.eval_string("{pAddressLine_3}") + " " + lr.eval_string("{pVuserID}") + " "+lr.eval_string("{vIteration}") + " " + lr.eval_string("{vTimeStamp}") ;
+			vCity = lr.eval_string("{pCity}");
+			vPostCode = lr.eval_string("{pPostCode_1}") + " " + lr.eval_string("{pPostCode_2}") ;
+	
+		}
+		
+		else if (vGDPR_FLAG.equals("1")) {
+			
+			vTitle = "X";	
+			vRandomStrFirstName="X";
+			vRandomStrLastName="X";
+			vDOB = "01-01-1901";	
+			vEmail = "510" + lr.eval_string("{pExtCustomerID}") + "@mnsgdpr.com"; 
+			vPhoneNum = "0";  
+			vAddressLine_1 = "X";	
+			vAddressLine_2 = "X";	
+			vAddressLine_3 = "X";	
+			vCity = "X";
+			vPostCode = lr.eval_string("{pPostCode_1}")  ;
+		
+		}
+	        
+    	
+    	else if (vGDPR_FLAG.equals("2")) {
+			
+			vTitle = "Z";	
+			vRandomStrFirstName="Z";
+			vRandomStrLastName="Z";
+			vDOB = "01-01-1901";	
+			vEmail = "510" + lr.eval_string("{pExtCustomerID}") + "@mnsgdprdr.com"; 
+			vPhoneNum = "0";  
+			vAddressLine_1 = "Z";	
+			vAddressLine_2 = "Z";	
+			vAddressLine_3 = "Z";	
+			vCity = "Z";
+			vPostCode = lr.eval_string("{pPostCode_1}")  ;
+		
+		}
+        
+    	
+		lr.start_transaction("02_PUSH_TO_QUEUE_I0840_WCS");
+
+        try {
+			
+			MQMessage tmsg_WCS = new MQMessage();
+
+			MQMessage tmsg_ESP = new MQMessage();
+
+            MQPutMessageOptions pmo = new MQPutMessageOptions();
+
+            tmsg_WCS.clearMessage();
+            tmsg_ESP.clearMessage();
+
+            try
+
+            {
+
+                tmsg_WCS.format = "MQSTR";
+                tmsg_ESP.format = "MQSTR";
+                tmsg_WCS.writeString(this.getXMLString("WCS"));
+                
+//                if (vGDPR_FLAG.equals("0")) {
+//                	tmsg_ESP.writeString(this.getXMLString("ESP"));
+//                }
+
+
+            } catch (java.io.IOException e)
+
+            {
+
+                e.printStackTrace();
+
+            }
+
+            queue_WCS.put(tmsg_WCS, pmo);
+            
+//            if (vGDPR_FLAG.equals("0")) {
+//            	queue_ESP.put(tmsg_ESP, pmo);
+//            }
+
+        } catch (MQException ex)
+
+        {
+
+            System.out.println("An MQSeries error occurred : Completion code " + ex.completionCode + " Reason code " + ex.reasonCode);
+
+        }
+
+        lr.end_transaction("02_PUSH_TO_QUEUE_I0840_WCS", lr.AUTO);
+
+        
+        
+        return 0;
+
+		
+	}//end of action
+
+
+	public int end() throws Throwable {
+		
+
+        lr.start_transaction("03_DISCONNECT_I0840_WCS");
+
+        queue_WCS.close();
+        queue_ESP.close();
+
+        qMgr.disconnect();
+
+        lr.end_transaction("03_DISCONNECT_I0840_WCS", lr.AUTO);
+    	
+		return 0;
+
+	}//end of end
+	
+	  
+	public String randomString(int len) 	//RANDOM STRING FUNCTION	
+	{
+	    String AB = "abcdefijklmnopqrstuvwxyz";
+	    Random rnd = new Random();
+	    StringBuilder sb = new StringBuilder( len );
+	    for( int i = 0; i < len; i++ ) 
+		sb.append( AB.charAt( rnd.nextInt(AB.length()) ) );
+	    return sb.toString();
+	}
+	
+	public int randomPhone() {
+		
+		Random rand = new Random();
+		int num = rand.nextInt(900000000) + 100000000;
+		return num;
+	}
+
+
+
+    public String getXMLString(String Qname) throws Throwable {
+		
+		
+		String newXml ="";
+        
+		if (Qname.equals("WCS")) {
+            
+			String newXml_WCS ="<?xml version=\"1.0\" encoding=\"UTF-8\"?> <service:CustomerInfo xmlns:service=\"http://service.ccd.commerce.mns.com/\">    <Header>       <ServiceIdentifier>997e1ee:1628f4cb499:-7f35</ServiceIdentifier>       <StoreId>10151</StoreId>       <CreationDateTime>" + lr.eval_string("{pCreationTime}") + "</CreationDateTime>       <LangId>-24</LangId>       <Currency>GBP</Currency>       <Locale>en_GB</Locale>       <SourceSystem>WCS</SourceSystem>    </Header>    <CustomerDetails>       <ExternalCustomerId>510" + lr.eval_string("{pExtCustomerID}") + "</ExternalCustomerId>       <Telephone>" + vPhoneNum + "</Telephone>       <Title>" + vTitle + "</Title>       <FirstName>" + vRandomStrFirstName + "</FirstName>       <LastName>" + vRandomStrLastName + "</LastName>       <Dob>" + vDOB + "</Dob>       <Email>" + vEmail + "</Email>       <Address>          <FirstName>" + vRandomStrFirstName + "</FirstName>          <LastName>" + vRandomStrLastName + "</LastName>          <Title>" + vTitle + "</Title>          <AddressLine1>" + vAddressLine_1 + "</AddressLine1>          <AddressLine2>" + vAddressLine_2 + "</AddressLine2> <AddressLine3>" + vAddressLine_3 + "</AddressLine3>          <City>" + vCity + "</City>          <Country>United Kingdom</Country>          <CountryCode>GB</CountryCode>          <PostalCode>" + vPostCode + "</PostalCode>          <Telephone>" + vPhoneNum + "</Telephone>       </Address>    </CustomerDetails>    <CsrContactPrefs>       <Mail>Y</Mail>       <Phone>Y</Phone>    </CsrContactPrefs>   <IsActive>Y</IsActive>    <IsAgeOver18>Y</IsAgeOver18> </service:CustomerInfo>";
+            		
+			//System.out.println("pExtCustomerID : " + lr.eval_string("{pExtCustomerID}"));
+
+			newXml = newXml_WCS;
+		}
+		else if (Qname.equals("ESP")) {
+        	
+        	String newXml_ESP ="<?xml version=\"1.0\" encoding=\"UTF-8\"?> <ICOS_ORDER> <TRANSACTION_KEY>1</TRANSACTION_KEY> <START_TRANSACTION> <ECOM_ORDER_NUM>I210" + lr.eval_string("{pExtCustomerID}") + "</ECOM_ORDER_NUM> <CFTO_ORDER_NUM>1</CFTO_ORDER_NUM> <LOYALTYID>1213</LOYALTYID> <LOYALTYTYPE>special</LOYALTYTYPE> <LOYALTYFLAG>Y</LOYALTYFLAG> <SOURCE>STORENET</SOURCE> <STORE_NUM>7184</STORE_NUM> <USAGE /> <CURRENCY>GBP</CURRENCY> <RAISED_BY>98083593</RAISED_BY> <ACTION>RAISE</ACTION> <ECOM_ORDER_VER>1</ECOM_ORDER_VER> <ORDER_ENTRY_DATE>" + lr.eval_string("{pOrder_Entry_Date}") + "</ORDER_ENTRY_DATE> <ORDER_ENTRY_TIME>" + lr.eval_string("{pOrder_Entry_Time}") + "</ORDER_ENTRY_TIME> </START_TRANSACTION> <PROMOTION_CODES> <PROMOTION_CODE /> </PROMOTION_CODES> <ORDERING_CUSTOMER> <CUSTOMER_NUMBER>0</CUSTOMER_NUMBER> <ADDRESS_NUMBER>0</ADDRESS_NUMBER> <ABBREV_TITLE>" + vTitle + "</ABBREV_TITLE> <FORENAME>" + vRandomStrFirstName +"</FORENAME> <INITIAL_1>E</INITIAL_1> <INITIAL_2 /> <INITIAL_3 /> <SURNAME>" + vRandomStrLastName +"</SURNAME> <MAIL_PREFERENCE>Y</MAIL_PREFERENCE> <ADDR1>" + vAddressLine_1 +"</ADDR1> <ADDR2>" + vAddressLine_2 +"</ADDR2> <ADDR3>" + vAddressLine_3 +"</ADDR3> <ADDR4 /> <ADDR5 /> <POSTCODE>" + vPostCode +"</POSTCODE> <ISO_COUNTRY_CODE>GB</ISO_COUNTRY_CODE> <HOME_PHONE_NUM>" + vPhoneNum +"</HOME_PHONE_NUM> <HOME_DIALCD_DIGT>0</HOME_DIALCD_DIGT> <ADDRESS_FORCED>N</ADDRESS_FORCED> <EMAIL>"+vRandomStrFirstName + "." + vRandomStrLastName + lr.eval_string("{pDate}") + "@gmail.com</EMAIL> <ECOM_CUST_NUM>0</ECOM_CUST_NUM> <I_AM_OVER_18>Y</I_AM_OVER_18> <SOURCE_DESCR>STORENET</SOURCE_DESCR> <DEL_POINT_SFFX /> </ORDERING_CUSTOMER> <ORDER_LINES> <ORDER_LINE> <ORDER_LINE_ID>1</ORDER_LINE_ID> <UPC>00475761</UPC> <QUANTITY>1</QUANTITY> <LEAFLET_CODE /> <ITEM_PRICE>3500</ITEM_PRICE> <REASON_CODE_DESC /> <WEDDING_LIST_IND /> <CORP_ORDER_LINE>N</CORP_ORDER_LINE> <CAT_PAGE_NUM /> <REQUESTED_DATE>26/08/2016</REQUESTED_DATE> <DELIVERY_SERVICE /> <GIFT_REG_CODE /> <GIFT_REG_NAME /> <EVENT>CAKE0000</EVENT> <DELIVERY_PERIOD>default</DELIVERY_PERIOD> <WEIGHT /> <ITEM_SHORT_DESCRIPTION>good quality</ITEM_SHORT_DESCRIPTION> </ORDER_LINE> </ORDER_LINES> <ORDER_LINE_ATTRIBUTES> <ORDER_LINE_ATTRIBUTE> <ORDER_LINE_PTR>1</ORDER_LINE_PTR> <ATTRIBUTE>MESS</ATTRIBUTE> <VALUE>Congratulations on Your Ruby Wedding</VALUE> </ORDER_LINE_ATTRIBUTE> <ORDER_LINE_ATTRIBUTE> <ORDER_LINE_PTR>1</ORDER_LINE_PTR> <ATTRIBUTE>SPCI</ATTRIBUTE> <VALUE /> </ORDER_LINE_ATTRIBUTE> </ORDER_LINE_ATTRIBUTES> <RESERVATIONS /> <DELIVERY_LINES> <DELIVERY_LINE> <ORDER_LINE_PTR>1</ORDER_LINE_PTR> <GIFTDETAIL /> <DELIVERY_PTR>1</DELIVERY_PTR> <QUANTITY>1</QUANTITY> </DELIVERY_LINE> </DELIVERY_LINES> <DELIVERY_RECORDS> <DELIVERY_RECORD> <DELIVERY_ID>1</DELIVERY_ID> <DELIVINSTR_LINE1 /> <DELIVINSTR_LINE2 /> <DELIVERY_CHARGE>0</DELIVERY_CHARGE> <STORE_NUM>7184</STORE_NUM> <OCCASION>Occasion</OCCASION> <OCCASION_TEXT /> <OCCASION_DATE>26/08/2016</OCCASION_DATE> </DELIVERY_RECORD> </DELIVERY_RECORDS> <PAYMENTS> <PAYMENT> <AMOUNT>3500</AMOUNT> <PAYMENT_TYPE>STORE_PAYMENT</PAYMENT_TYPE> <STORE_NUM>7184</STORE_NUM> <STORE_PAY_TYPE>DEPOSIT_IN_STORE</STORE_PAY_TYPE> <DEPOSIT>Y</DEPOSIT> </PAYMENT> <PAYMENT> <AMOUNT>0</AMOUNT> <PAYMENT_TYPE>STORE_PAYMENT</PAYMENT_TYPE> <STORE_NUM>7184</STORE_NUM> <STORE_PAY_TYPE>PAYMENT_IN_STORE</STORE_PAY_TYPE> <DEPOSIT>N</DEPOSIT> </PAYMENT> </PAYMENTS> </ICOS_ORDER>";
+
+            newXml = newXml_ESP;
+		}
+		
+
+		
+		return newXml;
+		
+		
+    }
+}
