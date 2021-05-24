@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 400;
+      /* color: red; */
+      text-align: left;
+      background-color: #efeff5
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0;
+      margin-bottom: .5rem;
+    }
+
+    table {
+      border-collapse: collapse
+    }
+
+    th {
+      text-align: inherit;
+      text-align: -webkit-match-parent;
+
+
+    }
+
+    tbody tr:nth-child(even) {
+      background: #eee;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-gap: 1em;
+      /* padding: 1em; */
+      margin: 1em;
+    }
+
+    .summary>div {
+      background: white;
+      padding-left: 1em;
+      padding-top: 0.25em;
+      border: 1px solid;
+    }
+
+    .text-xs {
+      font-size: .75rem !important;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: #668cff !important;
+    }
+
+    .h1, h1 {
+      font-size: 1.5rem
+    }
+
+    .h2,  h2 {
+      font-size: 1.4rem
+    }
+
+    .h3, h3 {
+      font-size: 1.3rem
+    }
+
+    .h4, h4 {
+      font-size: 1.2rem
+    }
+
+    .h5, h5 {
+      font-size: 1.1rem
+    }
+
+    .h6, h6 {
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .container {
+      width: 100%;
+      padding-right: .75rem;
+      padding-left: .75rem;
+      margin-right: auto;
+      margin-left: auto;
+      margin-bottom: 2em;
+
+    }
+
+    .table {
+      width: 100%;
+      margin-bottom: 1rem;
+      /* color: #69707a; */
+    }
+
+    .table td,
+    .table th {
+      padding: .75rem;
+      vertical-align: top;
+      border-top: 1px solid #e0e5ec
+    }
+
+    .table thead th {
+      vertical-align: bottom;
+      background: #7373a5;
+      color: white;
+
+
+
+    }
+
+    .table-bordered,
+    .table-bordered td,
+    .table-bordered th {
+      border: 1px solid blue;
+    }
+
+    .card {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 0 solid rgba(33, 40, 50, .125);
+      border-radius: .35rem;
+    }
+
+    .card-body {
+      flex: 1 1 auto;
+      min-height: 1px;
+      padding-top: 1em;
+      /* padding: 1.35rem */
+    }
+
+
+    .card-header {
+      padding: 1rem 1.35rem;
+      margin-bottom: 0;
+      background-color: #e0e0eb;
+      border-bottom: 0 solid rgba(33, 40, 50, .125);
+    }
+  </style>
+
+</head>
+
+<body>
+  <!-- <div class="main"> -->
+  <div class="summary">
+
+    <div>
+      <div class="text-xs">Start time</div>
+      <p>2021-05-21 11:12:14</p>
+    </div>
+
+    <div>
+      <div class="text-xs">End time</div>
+      <p>2021-05-21 11:12:14</p>
+    </div>
+
+    <div>
+      <div class="text-xs">Elapsed time</div>
+      <p>00:12:14</p>
+    </div>
+
+    <div>
+      <div class="text-xs">Run id</div>
+      <p>COP_OUTBOUND_API_PNF_0042</p>
+    </div>
+
+
+    <div>
+      <div class="text-xs text-success"># successful requests</div>
+      <p>12345</p>
+    </div>
+
+    <div>
+      <div class="text-xs text-danger"># Failed requests</div>
+      <p>14</p>
+    </div>
+
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-header">
+        <h6>DataTables Example</h6>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered " id="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Office</th>
+              <th>Age</th>
+              <th>Start date</th>
+              <th>Salary</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Airi Satou</td>
+              <td>Accountant</td>
+              <td>Tokyo</td>
+              <td>33</td>
+              <td>2008/11/28</td>
+              <td>$162,700</td>
+            </tr>
+            <tr>
+              <td>Angelica Ramos</td>
+              <td>Chief Executive Officer (CEO)</td>
+              <td>London</td>
+              <td>47</td>
+              <td>2009/10/09</td>
+              <td>$1,200,000</td>
+            </tr>
+            <tr>
+              <td>Ashton Cox</td>
+              <td>Junior Technical Author</td>
+              <td>San Francisco</td>
+              <td>66</td>
+              <td>2009/01/12</td>
+              <td>$86,000</td>
+            </tr>
+            <tr>
+              <td>Bradley Greer</td>
+              <td>Software Engineer</td>
+              <td>London</td>
+              <td>41</td>
+              <td>2012/10/13</td>
+              <td>$132,000</td>
+            </tr>
+            <tr>
+              <td>Brenden Wagner</td>
+              <td>Software Engineer</td>
+              <td>San Francisco</td>
+              <td>28</td>
+              <td>2011/06/07</td>
+              <td>$206,850</td>
+            </tr>
+            <tr>
+              <td>Brielle Williamson</td>
+              <td>Integration Specialist</td>
+              <td>New York</td>
+              <td>61</td>
+              <td>2012/12/02</td>
+              <td>$372,000</td>
+            </tr>
+            <tr>
+              <td>Bruno Nash</td>
+              <td>Software Engineer</td>
+              <td>London</td>
+              <td>38</td>
+              <td>2011/05/03</td>
+              <td>$163,500</td>
+            </tr>
+            <tr>
+              <td>Caesar Vance</td>
+              <td>Pre-Sales Support</td>
+              <td>New York</td>
+              <td>21</td>
+              <td>2011/12/12</td>
+              <td>$106,450</td>
+            </tr>
+            <tr>
+              <td>Cara Stevens</td>
+              <td>Sales Assistant</td>
+              <td>New York</td>
+              <td>46</td>
+              <td>2011/12/06</td>
+              <td>$145,600</td>
+            </tr>
+            <tr>
+              <td>Cedric Kelly</td>
+              <td>Senior Javascript Developer</td>
+              <td>Edinburgh</td>
+              <td>22</td>
+              <td>2012/03/29</td>
+              <td>$433,060</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header">
+        <h6 style="text-align: center">DataTables Example</h6>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered " id="data-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Position</th>
+              <th>Office</th>
+              <th>Age</th>
+              <th>Start date</th>
+              <th>Salary</th>
+
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>Airi Satou</td>
+              <td>Accountant</td>
+              <td>Tokyo</td>
+              <td>33</td>
+              <td>2008/11/28</td>
+              <td>$162,700</td>
+            </tr>
+            <tr>
+              <td>Angelica Ramos</td>
+              <td>Chief Executive Officer (CEO)</td>
+              <td>London</td>
+              <td>47</td>
+              <td>2009/10/09</td>
+              <td>$1,200,000</td>
+            </tr>
+            <tr>
+              <td>Ashton Cox</td>
+              <td>Junior Technical Author</td>
+              <td>San Francisco</td>
+              <td>66</td>
+              <td>2009/01/12</td>
+              <td>$86,000</td>
+            </tr>
+            <tr>
+              <td>Bradley Greer</td>
+              <td>Software Engineer</td>
+              <td>London</td>
+              <td>41</td>
+              <td>2012/10/13</td>
+              <td>$132,000</td>
+            </tr>
+            <tr>
+              <td>Brenden Wagner</td>
+              <td>Software Engineer</td>
+              <td>San Francisco</td>
+              <td>28</td>
+              <td>2011/06/07</td>
+              <td>$206,850</td>
+            </tr>
+            <tr>
+              <td>Brielle Williamson</td>
+              <td>Integration Specialist</td>
+              <td>New York</td>
+              <td>61</td>
+              <td>2012/12/02</td>
+              <td>$372,000</td>
+            </tr>
+            <tr>
+              <td>Bruno Nash</td>
+              <td>Software Engineer</td>
+              <td>London</td>
+              <td>38</td>
+              <td>2011/05/03</td>
+              <td>$163,500</td>
+            </tr>
+            <tr>
+              <td>Caesar Vance</td>
+              <td>Pre-Sales Support</td>
+              <td>New York</td>
+              <td>21</td>
+              <td>2011/12/12</td>
+              <td>$106,450</td>
+            </tr>
+            <tr>
+              <td>Cara Stevens</td>
+              <td>Sales Assistant</td>
+              <td>New York</td>
+              <td>46</td>
+              <td>2011/12/06</td>
+              <td>$145,600</td>
+            </tr>
+            <tr>
+              <td>Cedric Kelly</td>
+              <td>Senior Javascript Developer</td>
+              <td>Edinburgh</td>
+              <td>22</td>
+              <td>2012/03/29</td>
+              <td>$433,060</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+
+  </div>
+
+  <!-- </div> -->
+
+
+
+
+
+</body>
+
+</html>
